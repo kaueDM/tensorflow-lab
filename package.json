@@ -1,0 +1,26 @@
+{
+  "name": "tensorflow-lab",
+  "version": "1.0.0",
+  "description": "Nothing really interesting.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaueDM/tensorflow-lab.git"
+  },
+  "keywords": [
+    "tensorflow",
+    "probably wrong"
+  ],
+  "dependencies": {
+    "@tensorflow/tfjs": "0.11.7"
+  },
+  "author": "Kauê da Maia<kaue@ruptiva.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kaueDM/tensorflow-lab/issues"
+  },
+  "homepage": "https://github.com/kaueDM/tensorflow-lab#readme"
+}
