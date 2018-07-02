@@ -15,7 +15,7 @@ npm install -g parcel-bundler
 parcel index.html
 ```
 
-### Notes
+### Tensors
 
 **Tensor:** The main building block of a Tensorflow neural net. Its a generic name for any **N-dimensional thing of numbers** and it's operations.
 
@@ -85,5 +85,75 @@ for each type of tensor. Doing this, you get a more readable code.
 * `tf.tensor2d (values, shape?, dtype?)`: Rank-2 tensor. `values` is a matrix of numbers.
 * `tf.tensor2d (values, shape?, dtype?)`: Rank-3 tensor. `values` is a matrix of matrices. Exactly what we got in the example above.
 
+## Operations
+
+**Matrices multiplication**
+
+`tf.matMul (a, b, transposeA?, transposeB?)`
+
+* Works with rank-2 tensors only.
+* The number of **cols** in `a` should match the **rows** in `b`. Or **TRANSPOSE** one of them.
+* To transpose a rank-2 tensor, you should assign the new tensor (Tensors are **IMMUTABLE!**) to a new variable, or you will get a big error.
+
+## Memory management
+
+First of all, **Garbage collector is dead in TF.js lands.**
+Why? Because we are working in the **GPU.** Tf.js needs to manage _'manually'_ the GPU memory to achieve a good speed in mathematical operations. So, pay attention to **memory leaks.**
+
+**How much tensors do i have?**
+
+`tf.memory().numTensors` will give you the answer.
+
+After you used your tensors, you can manually dispose them using `dispose()` method.
+
+```
+const values = Array.from({ length: 6 }, _ => Math.floor(Math.random() * 6) + 1)
+const shape = [2, 3]
+const myFirstTensor = tf.tensor2d(values, shape)
+const mySecondTensor = tf.tensor2d(values, shape)
+
+//Do something meaningful with your tensor here...
+const transposedTensor = mySecondTensor.transpose()
+const multipliedMatrices = myFirstTensor.matMul(transposedTensor)
+
+multipliedMatrices.print()
+
+//...and dispose when they aren't necessary anymore
+myFirstTensor.dispose()
+mySecondTensor.dispose()
+transposedTensor.dispose()
+
+```
+
+**OR**
+
+Wrap your code with `tf.tidy()` and let the memory cleanup happens _automagically:_
+
+```
+tf.tidy(_ => {
+    const values = Array.from({ length: 6 }, _ => Math.floor(Math.random() * 6) + 1)
+    const shape = [2, 3]
+    const myFirstTensor = tf.tensor2d(values, shape)
+    const mySecondTensor = tf.tensor2d(values, shape)
+    const transposedTensor = mySecondTensor.transpose()
+    const multipliedMatrices = myFirstTensor.matMul(transposedTensor)
+
+    multipliedMatrices.print()
+})
+```
+
+If you don't want to dispose a tensor automatically inside the `tf.tidy()` method, you can call `tf.keep()` to, guess what, keep it.
+
+```
+tf.tidy(_ => {
+    const values = Array.from({ length: 6 }, _ => Math.floor(Math.random() * 6) + 1)
+    const shape = [2, 3]
+    const myFirstTensor = tf.tensor2d(values, shape)
+    const mySecondTensor = tf.tensor2d(values, shape)
+    
+    tf.keep(myFirstTensor)
+    //Only mySecondTensor will be disposed.
+})
+```
 
 
